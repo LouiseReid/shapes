@@ -11,6 +11,16 @@ class StageContainer extends Component {
     };
   }
 
+
+  static getDerivedStateFromProps(props, state) {
+    if(props.goal){
+      const { goal } = props.goal;
+      return { goal }
+    }
+    return null;
+  }
+
+
   handleDragStart = e => {
     e.target.setAttrs({
       shadowOffset: {
@@ -60,6 +70,7 @@ class StageContainer extends Component {
   }
 
   render() {
+
     if(!this.props.layer) return null
 
     const objects = this.props.layer.layer.children.map(child => child)

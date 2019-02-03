@@ -7,7 +7,8 @@ class App extends Component {
     super(props);
     this.state = {
       layers: [],
-      currentLayer: null
+      currentLayer: null,
+      goal: null
     }
   }
 
@@ -20,12 +21,18 @@ class App extends Component {
 
   getCurrentLayer = () => {
     let currentLayer = this.state.layers[0]
-    this.setState({ currentLayer })
+    this.setState({ currentLayer }, this.getGoal)
+  }
+
+  getGoal = () => {
+    let goal = this.state.currentLayer.layer.children.find(child => child.attrs.name === 'goal')
+    this.setState({goal})
   }
 
   render() {
+
     return (
-      <StageContainer layer={this.state.currentLayer}/>
+      <StageContainer layer={this.state.currentLayer} goal={this.state.goal}/>
     );
   }
 }
