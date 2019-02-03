@@ -6,20 +6,9 @@ class StageContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      goal: {},
       goalY: 0.75 * window.innerHeight
     };
   }
-
-
-  static getDerivedStateFromProps(props, state) {
-    if(props.goal){
-      const { goal } = props.goal;
-      return { goal }
-    }
-    return null;
-  }
-
 
   handleDragStart = e => {
     e.target.setAttrs({
@@ -39,6 +28,13 @@ class StageContainer extends Component {
       shadowOffsetX: 5,
       shadowOffsetY: 5
     })
+    let shape = e.target
+    if (this.isNearGoal(shape, this.props.goal) && shape.attrs.result) {
+      this.props.goal.attrs.fill = 'green';
+      shape.setAttr("draggable", false);
+    } else if (this.isNearGoal(shape, this.props.goal)) {
+      alert("try again");
+    }
   }
 
   isNearGoal = (shape, goal) => {
@@ -46,9 +42,10 @@ class StageContainer extends Component {
     let shapeY = shape.getY();
     const shapeWidth = shape.getWidth();
     const shapeHeight = shape.getHeight();
-    const goalX = goal.getX();
-    const goalWidth = goal.getWidth();
-    const goalY = goal.getY();
+    const goalX = goal.attrs.x
+    const goalWidth = goal.attrs.width
+    const goalY = goal.attrs.y;
+
 
     if (shape.className === "Rect") {
       return (
