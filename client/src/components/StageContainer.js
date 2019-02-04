@@ -6,9 +6,19 @@ class StageContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      goalY: 0.75 * window.innerHeight
+      goalY: 0.75 * window.innerHeight,
+      goal: null,
+      goalColour: '#e20d0d'
     };
   }
+
+  static getDerivedStateFromProps(props, state) {
+    if(props.goal){
+      return { goal: <Rect {...props.goal.attrs}/> }
+    }
+    return null;
+  }
+
 
   handleDragStart = e => {
     e.target.setAttrs({
@@ -29,10 +39,10 @@ class StageContainer extends Component {
       shadowOffsetY: 5
     })
     let shape = e.target
-    if (this.isNearGoal(shape, this.props.goal) && shape.attrs.result) {
-      this.props.goal.attrs.fill = 'green';
+    if (this.isNearGoal(shape, this.state.goal) && shape.attrs.result) {
       shape.setAttr("draggable", false);
-    } else if (this.isNearGoal(shape, this.props.goal)) {
+      this.setState({goalColour: '#00814d'})
+    } else if (this.isNearGoal(shape, this.state.goal)) {
       alert("try again");
     }
   }
@@ -42,10 +52,9 @@ class StageContainer extends Component {
     let shapeY = shape.getY();
     const shapeWidth = shape.getWidth();
     const shapeHeight = shape.getHeight();
-    const goalX = goal.attrs.x
-    const goalWidth = goal.attrs.width
-    const goalY = goal.attrs.y;
-
+    const goalX = goal.props.x
+    const goalWidth = goal.props.width
+    const goalY = goal.props.y;
 
     if (shape.className === "Rect") {
       return (
@@ -79,7 +88,11 @@ class StageContainer extends Component {
         shapes.push(<Circle key={object.attrs.x} {...object.attrs} onDragStart={this.handleDragStart} onDragEnd={this.handleDragEnd}/>)
       }
       if(object.className === "Rect"){
-        shapes.push(<Rect key={object.attrs.x} {...object.attrs} onDragStart={this.handleDragStart} onDragEnd={this.handleDragEnd}/>)
+        if(object.attrs.name === "goal"){
+          shapes.push(<Rect key={object.attrs.x} {...object.attrs} fill={this.state.goalColour} onDragStart={this.handleDragStart} onDragEnd={this.handleDragEnd}/>)
+        } else {
+          shapes.push(<Rect key={object.attrs.x} {...object.attrs} onDragStart={this.handleDragStart} onDragEnd={this.handleDragEnd}/>)
+        }
       }
     })
 
