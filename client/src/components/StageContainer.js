@@ -1,20 +1,28 @@
 import React, { Component } from 'react';
 import Konva from 'konva';
-import { Stage, Layer, Rect, Circle } from 'react-konva';
+import { Stage, Layer, Rect, Circle, Text } from 'react-konva';
 
 class StageContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      goalY: 0.75 * window.innerHeight,
+      goalY: null,
       goal: null,
-      goalColour: '#e20d0d'
+      goalColour: '#e20d0d',
+      height: null,
+      width: null
     };
   }
 
+
   static getDerivedStateFromProps(props, state) {
     if(props.goal){
-      return { goal: <Rect {...props.goal.attrs}/> }
+      return {
+        goal: <Rect {...props.goal.attrs}/>,
+        height: props.stageHeight,
+        width: props.stageWidth,
+        goalY: props.stageHeight * 0.75
+      }
     }
     return null;
   }
@@ -78,30 +86,54 @@ class StageContainer extends Component {
   render() {
 
     if(!this.props.layer) return null
+    if(!this.state.width > 0) return null;
+
 
     const objects = this.props.layer.layer.children.map(child => child)
 
     let shapes = []
 
+
     objects.forEach(object => {
       if(object.className === "Circle"){
-        shapes.push(<Circle key={object.attrs.x} {...object.attrs} onDragStart={this.handleDragStart} onDragEnd={this.handleDragEnd}/>)
+        shapes.push(
+          <Circle key={object.attrs.x}
+          {...object.attrs}
+          onDragStart={this.handleDragStart}
+          onDragEnd={this.handleDragEnd}/>)
       }
       if(object.className === "Rect"){
         if(object.attrs.name === "goal"){
-          shapes.push(<Rect key={object.attrs.x} {...object.attrs} fill={this.state.goalColour} onDragStart={this.handleDragStart} onDragEnd={this.handleDragEnd}/>)
+          shapes.push(
+            <Rect key={object.attrs.x}
+            {...object.attrs}
+            fill={this.state.goalColour}
+            onDragStart={this.handleDragStart}
+            onDragEnd={this.handleDragEnd}/>)
         } else {
-          shapes.push(<Rect key={object.attrs.x} {...object.attrs} onDragStart={this.handleDragStart} onDragEnd={this.handleDragEnd}/>)
+          shapes.push(
+            <Rect key={object.attrs.x}
+            {...object.attrs}
+            onDragStart={this.handleDragStart}
+            onDragEnd={this.handleDragEnd}
+            />)
         }
       }
     })
 
+
     return (
-      <Stage width={window.innerWidth} height={window.innerHeight}>
+      <Stage width={this.state.width} height={this.state.height}>
       <Layer>
-      {shapes}
+        <Text
+          text={this.props.layer.levelDesc}
+          x={0.02 * window.innerWidth}
+          y={0.02 * window.innerHeight}
+        />
+        {shapes}
       </Layer>
       </Stage>
+
     );
   }
 

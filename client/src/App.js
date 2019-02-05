@@ -8,8 +8,11 @@ class App extends Component {
     this.state = {
       layers: [],
       currentLayer: null,
-      goal: null
+      goal: null,
+      stageHeight: null,
+      stageWidth: null
     }
+    this.container = React.createRef()
   }
 
   componentDidMount(){
@@ -17,6 +20,11 @@ class App extends Component {
     .then(res => res.json())
     .then(layers => this.setState({layers}))
     .then(this.getCurrentLayer)
+
+    this.setState({
+      stageHeight: this.container.current.clientHeight,
+      stageWidth: this.container.current.clientWidth
+    })
   }
 
   getCurrentLayer = () => {
@@ -32,7 +40,14 @@ class App extends Component {
   render() {
 
     return (
-      <StageContainer layer={this.state.currentLayer} goal={this.state.goal}/>
+      <div id="container" ref={this.container}>
+      <StageContainer
+      layer={this.state.currentLayer}
+      goal={this.state.goal}
+      stageHeight={this.state.stageHeight}
+      stageWidth={this.state.stageWidth}
+      />
+      </div>
     );
   }
 }
