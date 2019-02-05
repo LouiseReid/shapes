@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import Konva from 'konva';
 import { Stage, Layer, Rect, Circle, Text } from 'react-konva';
+import './StageContainer.css';
+
 
 class StageContainer extends Component {
   constructor(props) {

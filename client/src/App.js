@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import StageContainer from './components/StageContainer'
-import './App.css';
+import _ from 'lodash';
+import './App.css'
 
 class App extends Component {
   constructor(props) {
@@ -28,7 +29,8 @@ class App extends Component {
   }
 
   getCurrentLayer = () => {
-    let currentLayer = this.state.layers[0]
+    let shuffled = _.shuffle(this.state.layers)
+    let currentLayer = shuffled.shift()
     this.setState({ currentLayer }, this.getGoal)
   }
 
@@ -40,14 +42,17 @@ class App extends Component {
   render() {
 
     return (
+      <>
       <div id="container" ref={this.container}>
-      <StageContainer
-      layer={this.state.currentLayer}
-      goal={this.state.goal}
-      stageHeight={this.state.stageHeight}
-      stageWidth={this.state.stageWidth}
-      />
+        <StageContainer
+        layer={this.state.currentLayer}
+        goal={this.state.goal}
+        stageHeight={this.state.stageHeight}
+        stageWidth={this.state.stageWidth}
+        />
       </div>
+      <button onClick={this.getCurrentLayer}>Next</button>
+      </>
     );
   }
 }
